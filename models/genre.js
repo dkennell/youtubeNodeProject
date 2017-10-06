@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 
-var genreSchema = mongoose.schema({
+var genreSchema = mongoose.Schema({
 	name:{
 		type: String,
 		required:true
