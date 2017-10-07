@@ -3,11 +3,13 @@ var app = express()
 var bodyParser = require('body-parser')
 var mongoose = require('mongoose')
 
+
+app.use(bodyParser.json())
+
 Genre = require('./models/genre')
 Book = require('./models/book')
 
-
-mongoose.connect('mongodb://localhost/bookstore')
+mongoose.connect('mongodb://localhost/bookstore', { useMongoClient: true })
 var db = mongoose.connection
 
 app.get('/', function(req, res){
@@ -23,12 +25,87 @@ app.get('/api/genres', function(req, res){
 	})
 })
 
+app.post('/api/genres', function(req, res){
+	var genre = req.body
+	Genre.addGenre(genre, function(err, genres){
+		if(err){
+			throw err
+		}
+		res.json(genre)
+	})
+})
+
+app.put('/api/genres/:_id', function(req, res){
+	var _id = req.params._id
+	var genre = req.body
+	Genre.updateGenre(_id, genre, {}, function(err, genre){	
+		if(err){
+			throw err
+		}
+		res.json(genre)
+	})
+})
+
+app.delete('/api/genres/:_id', function(req, res){
+	var genre = req.body
+	var _id = req.params._id
+	Genre.removeGenre(_id, genre, {}, function(err, genre){	
+		if(err){
+			throw err
+		}
+		res.json(genre)
+	})
+})
+
+app.delete('/api/books/:_id', function(req, res){
+	var book = req.body
+	var _id = req.params._id
+	Book.removeBook(_id, book, {}, function(err, book){	
+		if(err){
+			throw err
+		}
+		res.json(book)
+	})
+})
+
+
+app.put('/api/books/:_id', function(req, res){
+	var _id = req.params._id
+	var book = req.body
+	Book.updateBook(_id, book, {}, function(err, book){	
+		if(err){
+			throw err
+		}
+		res.json(book)
+	})
+})
+
+
+app.post('/api/books', function(req, res){
+	var book = req.body
+	Book.addBook(book, function(err, books){
+		if(err){
+			throw err
+		}
+		res.json(book)
+	})
+})
+
 app.get('/api/books', function(req, res){
 	Book.getBooks(function(err, books){
 		if(err){
 			throw err
 		}
 		res.json(books)
+	})
+})
+
+app.get('/api/books/:_id', function(req, res){
+	Book.getBookById(req.params._id, function(err, book){
+		if(err){
+			throw err
+		}
+		res.json(book)
 	})
 })
 
